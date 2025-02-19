@@ -462,6 +462,79 @@
             });
         }
 
+        async function loadTags() {
+            try {
+                const response = await fetch('introduction/StarFall/tags.json');
+                const data = await response.json();
+                return data.tags || [];
+            } catch (error) {
+                console.error('Error loading tags:', error);
+                return [];
+            }
+        }
+
+        async function saveTags(tags) {
+            try {
+                await fetch('introduction/StarFall/tags.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ tags })
+                });
+            } catch (error) {
+                console.error('Error saving tags:', error);
+                alert('保存标签失败，请重试');
+            }
+        }
+
+        async function loadAndDisplayTags() {
+            const tags = await loadTags();
+            const tagCloud = document.querySelector('.tag-cloud');
+            tagCloud.innerHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+            const tagManagerContainer = document.getElementById('tagManagerContainer');
+            tagManagerContainer.innerHTML = '';
+            tags.forEach(tag => {
+                const tagItem = document.createElement('div');
+                tagItem.className = 'tag-item';
+                tagItem.innerHTML = `
+                    ${tag}
+                    <button onclick="removeTag('${tag}')">&times;</button>
+                `;
+                tagManagerContainer.appendChild(tagItem);
+            });
+        }
+
+        async function addNewTag() {
+            const newTag = document.getElementById('newTagInput').value.trim();
+            if (newTag) {
+                const tags = await loadTags();
+                if (!tags.includes(newTag)) {
+                    tags.push(newTag);
+                    await saveTags(tags);
+                    await loadAndDisplayTags();
+                    document.getElementById('newTagInput').value = '';
+                }
+            }
+        }
+
+        async function removeTag(tag) {
+            const tags = await loadTags();
+            const updatedTags = tags.filter(t => t !== tag);
+            await saveTags(updatedTags);
+            await loadAndDisplayTags();
+        }
+
+        async function saveTagChanges() {
+            closeTagModal();
+        }
+
+        function closeTagModal() {
+            document.getElementById('tagModal').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
         function saveProfile() {
             const bio = document.getElementById('profileBio').value;
             const profileSection = document.querySelector('.profile p');
@@ -475,6 +548,11 @@
 
             closeProfileModal();
         }
+
+        // 页面加载时初始化标签
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAndDisplayTags();
+        });
 
         document.getElementById('profileTagInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && this.value.trim() !== '') {
