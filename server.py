@@ -3,16 +3,64 @@ import json
 import os
 
 class RequestHandler(SimpleHTTPRequestHandler):
+    def send_error(self, code, message=None):
+        try:
+            super().send_error(code, message)
+        except UnicodeEncodeError:
+            # 处理Unicode编码错误
+            self.send_response(code)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.end_headers()
+            error_content = f'<html><head><title>Error {code}</title></head><body><h1>Error {code}</h1><p>{message}</p></body></html>'
+            self.wfile.write(error_content.encode('utf-8'))
+
     def do_GET(self):
         if self.path == '/list_music':
-            # 获取音乐文件列表
             try:
-                music_files = [f for f in os.listdir('music') if f.endswith('.mp3')]
+                music_files = []
+                for f in os.listdir('music'):
+                    if f.endswith('.mp3'):
+                        file_path = os.path.join('music', f)
+                        try:
+                            with open(file_path, 'rb') as test_file:
+                                test_file.read(1024)
+                            music_files.append({
+                                'name': f,
+                                'size': os.path.getsize(file_path),
+                                'last_modified': os.path.getmtime(file_path)
+                            })
+                        except Exception:
+                            continue
+                
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
                 self.wfile.write(json.dumps(music_files).encode())
                 return
+            except Exception as e:
+                self.send_error(500, str(e))
+                return
+        elif self.path.startswith('/music/'):
+            try:
+                file_name = os.path.basename(self.path)
+                file_name = file_name.replace('%20', ' ')
+                file_name = file_name.replace('%26', '&')
+                file_path = os.path.join('music', file_name)
+                
+                if os.path.exists(file_path) and os.path.isfile(file_path):
+                    with open(file_path, 'rb') as f:
+                        self.send_response(200)
+                        self.send_header('Content-type', 'audio/mpeg')
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                        self.send_header('Accept-Ranges', 'bytes')
+                        self.send_header('Cache-Control', 'public, max-age=3600')
+                        self.end_headers()
+                        self.wfile.write(f.read())
+                    return
+                else:
+                    self.send_error(404, 'File not found')
+                    return
             except Exception as e:
                 self.send_error(500, str(e))
                 return
