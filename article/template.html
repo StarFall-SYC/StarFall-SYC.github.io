@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .article-location {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .article-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .article-tag {
+            background: #fce4ec;
+            color: #e91e63;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-top: 2rem;
+            white-space: pre-wrap;
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            background: #c2185b;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .article-title {
+                font-size: 2rem;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <article>
+            <header class="article-header">
+                <h1 class="article-title" id="title"></h1>
+                <div class="article-meta">
+                    <div id="date"></div>
+                    <div class="article-location" id="location"></div>
+                </div>
+                <div class="article-tags" id="tags"></div>
+            </header>
+            <div class="article-content" id="content"></div>
+        </article>
+    </div>
+    <button class="back-button" onclick="window.location.href='/'">返回主页</button>
+
+    <script>
+        function loadArticle() {
+            const params = new URLSearchParams(window.location.search);
+            const title = params.get('title');
+            const date = params.get('date');
+            const location = params.get('location');
+            const content = params.get('content');
+            const tags = JSON.parse(params.get('tags'));
+
+            document.title = title;
+            document.getElementById('title').textContent = title;
+
+            const formattedDate = new Date(date).toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('date').textContent = formattedDate;
+
+            if (location) {
+                document.getElementById('location').innerHTML = `📍 ${location}`;
+            }
+
+            document.getElementById('tags').innerHTML = tags
+                .map(tag => `<span class="article-tag">${tag}</span>`)
+                .join('');
+
+            document.getElementById('content').textContent = content;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadArticle);
+    </script>
+</body>
+</html>

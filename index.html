@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亲爱的，情人节快乐！</title>
+    <title>厌冬的小天地</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -13,310 +12,491 @@
         }
 
         body {
-            font-family: 'Ma Shan Zheng', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #fff5f7 0%, #ffd1dc 100%);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            padding: 2rem;
+        }
+
+        .profile-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: block;
+            object-fit: cover;
+            border: 5px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .description {
+            color: #616161;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .music-player {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .music-progress {
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 1rem 0;
+            cursor: pointer;
             position: relative;
         }
 
-        body::before {
-            content: '';
+        .progress-bar {
+            height: 100%;
+            background: #e91e63;
+            border-radius: 5px;
+            width: 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .controls button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            background: #e91e63;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: #c2185b;
+        }
+
+        .song-info {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .song-title {
+            font-weight: bold;
+            color: #e91e63;
+            margin-bottom: 0.5rem;
+        }
+
+        .song-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .playlist {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #ddd;
+        }
+
+        .playlist-item {
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .playlist-item:hover {
+            background: #fce4ec;
+        }
+
+        .playlist-item.active {
+            background: #f8bbd0;
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .music-player h2 {
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .social-links {
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            color: #e91e63;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #c2185b;
+        }
+
+        /* 文章列表样式 */
+        .articles-section {
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .articles-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .articles-search {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .articles-search input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            width: 200px;
+        }
+
+        .articles-sort {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #e91e63;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .empty-text {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .empty-subtext {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .article-title {
+            color: #e91e63;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .article-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .article-tag {
+            background: #fce4ec;
+            color: #e91e63;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .articles-search input {
+                width: 150px;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 1.5rem;
+            }
+
+            .avatar {
+                width: 150px;
+                height: 150px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.3)"/></svg>') repeat;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .header {
-            text-align: center;
-            padding: 2rem;
-            color: #e91e63;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .photo-gallery {
-            width: 90%;
-            max-width: 1200px;
-            margin: 2rem auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem;
-        }
-
-        .photo-card {
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .photo-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
-        }
-
-        .photo-placeholder {
-            width: 100%;
-            height: 200px;
-            background: #f3e5f5;
-            display: flex;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
             justify-content: center;
-            color: #9c27b0;
-            font-size: 1.2rem;
-        }
-
-        .message-box {
-            background: rgba(255, 255, 255, 0.7);
-            padding: 2.5rem;
-            border-radius: 20px;
-            margin: 2rem;
-            max-width: 800px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-
-        .message-box p {
-            color: #d81b60;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .blog-links {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            align-items: center;
             z-index: 1000;
         }
 
-        .blog-link {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 15px;
-            color: #e91e63;
-            text-decoration: none;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.3s ease;
-        }
-
-        .blog-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .music-player {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            padding: 1rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.3s ease;
-        }
-
-        .music-player:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
-        }
-
-        .anniversary {
-            background: rgba(255, 255, 255, 0.7);
+        .modal-content {
+            background: white;
             padding: 2rem;
-            border-radius: 20px;
-            margin: 1rem 2rem;
-            max-width: 800px;
+            border-radius: 15px;
             width: 90%;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .anniversary h2 {
+        .modal-content h2 {
             color: #e91e63;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .modal-content textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .modal-content button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: #e91e63;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background: #c2185b;
+        }
+
+        .modal-content button[type="button"] {
+            background: #9e9e9e;
+        }
+
+        .modal-content button[type="button"]:hover {
+            background: #757575;
+        }
+
+        #tagList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-bottom: 1rem;
-            font-size: 1.8rem;
         }
 
-        .anniversary p {
-            color: #d81b60;
-            font-size: 1.2rem;
-            margin: 0.5rem 0;
-        }
-
-        .anniversary .days {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #c2185b;
-            margin: 1rem 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .heart {
-            position: fixed;
-            pointer-events: none;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .photo-gallery {
-                grid-template-columns: 1fr;
-            }
+        .tag {
+            background: #fce4ec;
+            color: #e91e63;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
     </style>
+    <script src="res/main.js" defer></script>
 </head>
 <body>
-    <div class="header">
-        <h1>情人节快乐！</h1>
-
-    </div>
-
-    <div class="message-box">
-        <p>在这特别的日子里，我想对你说：</p>
-        <p>遇见你是我最大的幸运，</p>
-        <p>有你的每一天都是情人节。</p>
-        <p>愿我们的爱情永远甜蜜浪漫，</p>
-        <p>我们一起创造更多美好的回忆。</p>
-    </div>
-
-    <div class="photo-gallery">
-        <div class="photo-card">
-            <div class="photo-placeholder">照片 1</div>
+    <div class="profile-container">
+        <img src="res/Her.jpg" alt="厌冬的头像" class="avatar">
+        <h1>厌冬的小天地</h1>
+        <p class="description">
+            欢迎来到我的个人空间！这里是我分享生活、想法和创作的地方。
+            希望能在这里与你分享一些美好的时光。
+        </p>
+        
+        <div class="music-player">
+            <h2>🎵 听听音乐</h2>
+            <p>让音乐陪伴我们的时光~</p>
+            <div class="song-info">
+                <div class="song-title">正在加载...</div>
+                <div class="song-time">00:00 / 00:00</div>
+            </div>
+            <div class="music-progress">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="controls">
+                <button onclick="previousSong()">上一首</button>
+                <button onclick="togglePlay()">播放</button>
+                <button onclick="nextSong()">下一首</button>
+            </div>
+            <audio id="audioPlayer">
+                你的浏览器不支持音频播放器。
+            </audio>
+            <div class="playlist"></div>
         </div>
-        <div class="photo-card">
-            <div class="photo-placeholder">照片 2</div>
+
+        <div class="social-links">
+            <a href="#" onclick="showArticleForm()">发表文章</a>
+            <a href="#" onclick="showIntroductionForm()">编辑简介</a>
+            <a href="#" onclick="showTagManager()">标签管理</a>
         </div>
-        <div class="photo-card">
-            <div class="photo-placeholder">照片 3</div>
+
+        <!-- 文章列表区域 -->
+        <div class="articles-section">
+            <div class="articles-header">
+                <div class="articles-search">
+                    <input type="text" id="searchArticles" placeholder="搜索文章..." onkeyup="searchArticles()">
+                    <select class="articles-sort" onchange="sortArticles(this.value)">
+                        <option value="date-desc">最新发布</option>
+                        <option value="date-asc">最早发布</option>
+                        <option value="title-asc">标题升序</option>
+                        <option value="title-desc">标题降序</option>
+                    </select>
+                </div>
+            </div>
+            <div class="articles-grid" id="articlesGrid"></div>
+        </div>
+
+        <!-- 文章发布表单 -->
+        <div id="articleForm" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>发表文章</h2>
+                <form id="newArticleForm">
+                    <input type="text" id="articleTitle" placeholder="文章标题" required>
+                    <textarea id="articleContent" placeholder="文章内容" required></textarea>
+                    <input type="text" id="articleLocation" placeholder="发布地点">
+                    <input type="text" id="articleTags" placeholder="标签（用逗号分隔）">
+                    <button type="submit">发布</button>
+                    <button type="button" onclick="hideArticleForm()">取消</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 个人简介编辑表单 -->
+        <div id="introductionForm" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>编辑个人简介</h2>
+                <form id="newIntroductionForm">
+                    <textarea id="introContent" placeholder="写点什么吧..." required></textarea>
+                    <button type="submit">保存</button>
+                    <button type="button" onclick="hideIntroductionForm()">取消</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 标签管理器 -->
+        <div id="tagManager" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>标签管理</h2>
+                <div id="tagList"></div>
+                <form id="newTagForm">
+                    <input type="text" id="newTag" placeholder="新标签名称">
+                    <button type="submit">添加标签</button>
+                    <button type="button" onclick="hideTagManager()">关闭</button>
+                </form>
+            </div>
         </div>
     </div>
-
-    <div class="anniversary">
-        <h2>我们的爱情计时器</h2>
-        <p>从 2025年1月13日 开始</p>
-        <div class="days">已经相恋 <span id="love-days">0</span> 天</div>
-        <p>愿我们的爱情永远甜蜜</p>
-    </div>
-
-    <div class="music-player">
-        <audio controls loop>
-            <source src="music/love-song.mp3" type="audio/mpeg">
-            你的浏览器不支持音频播放。
-        </audio>
-    </div>
-
-    <div class="blog-links">
-        <a href="Myblog.html" class="blog-link">StarFall的博客</a>
-        <a href="Herblog.html" class="blog-link">厌冬的博客</a>
-    </div>
-
-    <script>
-        // 计算恋爱天数
-        function calculateLoveDays() {
-            const startDate = new Date('2025-01-13');
-            const today = new Date();
-            const timeDiff = today - startDate;
-            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            document.getElementById('love-days').textContent = daysDiff > 0 ? daysDiff : 0;
-        }
-
-        calculateLoveDays();
-        setInterval(calculateLoveDays, 1000 * 60 * 60); // 每小时更新一次
-
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.style.left = Math.random() * window.innerWidth + 'px';
-            heart.style.top = window.innerHeight + 'px';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            heart.innerHTML = '❤';
-            heart.style.color = `rgb(${Math.random() * 100 + 155}, ${Math.random() * 50}, ${Math.random() * 50})`;
-            
-            document.body.appendChild(heart);
-
-            const animation = heart.animate([
-                { transform: `translateY(${window.innerHeight}px)` },
-                { transform: 'translateY(-100vh)' }
-            ], {
-                duration: Math.random() * 3000 + 3000,
-                easing: 'linear'
-            });
-
-            animation.onfinish = () => {
-                heart.remove();
-            };
-        }
-
-        setInterval(createHeart, 300);
-
-        document.addEventListener('click', (e) => {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.style.left = e.clientX + 'px';
-            heart.style.top = e.clientY + 'px';
-            heart.style.fontSize = '20px';
-            heart.innerHTML = '❤';
-            heart.style.color = '#ff4081';
-            
-            document.body.appendChild(heart);
-
-            heart.animate([
-                { transform: 'scale(1)', opacity: 1 },
-                { transform: 'scale(2)', opacity: 0 }
-            ], {
-                duration: 1000,
-                easing: 'ease-out'
-            }).onfinish = () => heart.remove();
-        });
-    </script>
 </body>
 </html>
